@@ -19,6 +19,10 @@ bool ImportCell2Ds(const string &filename, PolygonalMesh& mesh);
 
 bool RunTests(const PolygonalMesh& mesh);
 
+bool ClosedPolygons(const PolygonalMesh& mesh);
+
+bool CorrectEdges(const PolygonalMesh& mesh);
+
 bool CorrectVertices(const PolygonalMesh& mesh);
 
 bool TestMarkers(const PolygonalMesh& mesh);

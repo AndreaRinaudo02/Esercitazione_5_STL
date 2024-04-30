@@ -5,6 +5,7 @@
 #include <vector>
 #include <Eigen/Eigen>
 #include <algorithm>
+#include <set>
 
 using namespace std;
 using namespace Eigen;
@@ -12,6 +13,61 @@ using namespace Eigen;
 namespace PolygonalLibrary {
 
 // queste funzioni vengono descritte nel corpo della funzione RunTests
+
+bool ClosedPolygons(const PolygonalMesh& mesh)
+{
+    int n = 0;
+
+    for (const vector<unsigned int>& edges : mesh.Cell2DEdges)
+    {
+        set<unsigned int> uniqueVertices = {};
+
+        for (unsigned int edge : edges)
+        {
+            unsigned int origin = mesh.Cell1DVertices[edge][0];
+            unsigned int end = mesh.Cell1DVertices[edge][1];
+
+            uniqueVertices.insert(origin);
+            uniqueVertices.insert(end);
+        }
+
+        if (uniqueVertices.size() != edges.size())
+        {
+            cerr << "Error: 2D cell (Id:" << n <<") isn't a closed polygon."<< endl;
+
+            return false;
+        }
+
+        n=n+1;
+    }
+
+    return true;
+}
+
+bool CorrectEdges(const PolygonalMesh& mesh)
+{
+    int n = 0;
+
+    const vector<unsigned int>& lati = mesh.Cell1DId;
+
+    for (const vector<unsigned int>& edges : mesh.Cell2DEdges)
+    {
+        for (const unsigned int& edge : edges)
+        {
+            auto it = find(lati.begin(), lati.end(), edge);
+
+            if (it == lati.end())
+            {
+                cerr << "Error: 2D cell (Id:" << n <<") has an invalid edge."<< endl;
+                return false;
+            }
+        }
+
+        n = n+1;
+    }
+
+    return true;
+}
 
 bool CorrectVertices(const PolygonalMesh& mesh)
 {
@@ -80,6 +136,7 @@ bool TestMarkers(const PolygonalMesh& mesh)
         cout << endl;
     }
 
+    cout << endl;
     cout << "Test marker delle celle 1D" << endl;
 
     for (const auto& pair : mesh.Cell1DMarkers)
@@ -241,6 +298,7 @@ bool ImportCell1Ds(const string &filename, PolygonalMesh& mesh)
 
     unsigned int id, marker, origin, end;
     char ch;
+
     while(getline(file, line))
     {
         stringstream ss(line);
@@ -279,6 +337,7 @@ bool ImportCell2Ds(const string &filename, PolygonalMesh& mesh)
 
     unsigned int id, marker, numVertices, verticesID, numEdges, edgesID;
     char ch;
+
     while(getline(file, line))
     {
         stringstream ss(line);
@@ -349,6 +408,18 @@ bool ImportMesh(const string& filepath, PolygonalMesh& mesh)
 bool RunTests(const PolygonalMesh& mesh)
 {
     bool allTestsPassed = true;
+
+    // Controlla che le celle 2D siano dei poligoni chiusi
+    if(!ClosedPolygons(mesh))
+    {
+        allTestsPassed = false;
+    }
+
+    // Controlla che i lati delle celle 2D corrispondano a celle 1D esistenti
+    if(!CorrectEdges(mesh))
+    {
+        allTestsPassed = false;
+    }
 
     // Valuta se gli estremi delle celle 1D e i vertici delle celle 2D corrispondono alle celle 0D
     if(!CorrectVertices(mesh))
