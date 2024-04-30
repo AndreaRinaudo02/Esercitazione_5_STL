@@ -1,10 +1,7 @@
 #pragma once
 
-#include <iostream>
-#include <vector>
-#include <array>
 #include <map>
-#include "Eigen/Eigen"
+#include <Eigen/Eigen>
 
 using namespace std;
 using namespace Eigen;

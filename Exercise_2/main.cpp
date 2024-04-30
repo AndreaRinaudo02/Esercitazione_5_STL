@@ -1,5 +1,3 @@
-#include <iostream>
-#include "PolygonalMesh.hpp"
 #include "Utils.hpp"
 
 using namespace std;

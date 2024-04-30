@@ -1,8 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <list>
-#include <string>
 #include "PolygonalMesh.hpp"
 
 using namespace std;

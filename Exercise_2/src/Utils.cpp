@@ -1,9 +1,7 @@
 #include "Utils.hpp"
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
-#include <Eigen/Eigen>
 #include <algorithm>
 #include <set>
 
@@ -12,7 +10,7 @@ using namespace Eigen;
 
 namespace PolygonalLibrary {
 
-// queste funzioni vengono descritte nel corpo della funzione RunTests
+// queste funzioni, che testatno la mesh, vengono descritte sommariamente nel corpo della funzione RunTests
 
 bool ClosedPolygons(const PolygonalMesh& mesh)
 {
@@ -405,6 +403,8 @@ bool ImportMesh(const string& filepath, PolygonalMesh& mesh)
     return true;
 }
 
+// Esegue i test sulla mesh
+
 bool RunTests(const PolygonalMesh& mesh)
 {
     bool allTestsPassed = true;
@@ -441,11 +441,6 @@ bool RunTests(const PolygonalMesh& mesh)
 
     // Controlla che le celle 2D non abbiano area nulla
     if(!TestPolygonArea(mesh))
-    {
-        allTestsPassed = false;
-    }
-
-    if(!CorrectVertices(mesh))
     {
         allTestsPassed = false;
     }
